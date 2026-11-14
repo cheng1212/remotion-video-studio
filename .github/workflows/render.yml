@@ -1,0 +1,65 @@
+name: Render Remotion video
+
+on:
+  workflow_dispatch:
+    inputs:
+      resolution:
+        description: Output resolution
+        type: choice
+        required: true
+        default: 1080p
+        options:
+          - 1080p
+          - 4K
+      fps:
+        description: Frames per second
+        type: choice
+        required: true
+        default: '30'
+        options:
+          - '24'
+          - '30'
+          - '60'
+      duration_seconds:
+        description: Video duration in seconds (1–60)
+        type: number
+        required: true
+        default: 5
+
+permissions:
+  contents: read
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  render:
+    name: Render MP4 on GitHub hosted runner
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Prepare render settings
+        env:
+          RESOLUTION: ${{ inputs.resolution }}
+          FPS: ${{ inputs.fps }}
+          DURATION_SECONDS: ${{ inputs.duration_seconds }}
+        run: |
+          node -e "const fs=require('fs');const width=process.env.RESOLUTION==='4K'?3840:1920;const height=process.env.RESOLUTION==='4K'?2160:1080;const fps=Number(process.env.FPS);const seconds=Number(process.env.DURATION_SECONDS);if(!Number.isInteger(seconds)||seconds<1||seconds>60)throw new Error('Duration must be an integer from 1 to 60 seconds');fs.writeFileSync('render-props.json',JSON.stringify({width,height,fps,durationInFrames:fps*seconds}));console.log('Render settings:',{width,height,fps,seconds});"
+      - name: Render MP4
+        run: npx remotion render src/index.ts MainComposition out/video.mp4 --props=render-props.json --codec=h264
+      - name: Upload MP4 artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: remotion-video-${{ inputs.resolution }}-${{ inputs.fps }}fps
+          path: out/video.mp4
+          if-no-files-found: error
+          retention-days: 14
