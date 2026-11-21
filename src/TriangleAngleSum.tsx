@@ -1,10 +1,8 @@
 import React from 'react';
 import {
   AbsoluteFill,
-  Audio,
   interpolate,
   spring,
-  staticFile,
   useCurrentFrame,
   useVideoConfig,
 } from 'remotion';
@@ -81,7 +79,6 @@ const TriangleCharacter: React.FC<{
     ? section === 0 || (section === 2 && Math.floor(frame / 17) % 2 === 0) || section === 3
     : section === 1 || (section === 2 && Math.floor(frame / 17) % 2 === 1) || section === 3;
   const angry = section === 3 || (section === 2 && (isOrange ? frame > 360 : frame > 405));
-  const listening = section === 4 || (!talking && section !== 3);
   const mouth = talking ? 0.22 + 0.78 * (0.5 + 0.5 * Math.sin(frame * 0.62 + (isOrange ? 0 : 1.2))) : 0.06;
   const blink = blinkScale(frame, isOrange ? [42, 116, 194, 312, 526, 681] : [27, 98, 181, 287, 448, 590, 698]);
   const localBounce = talking ? Math.sin(frame * 0.42 + (isOrange ? 0 : 1.7)) * 5 : Math.sin(frame * 0.13) * 2;
@@ -242,7 +239,6 @@ export const TriangleAngleSum: React.FC = () => {
         </div>
       </div>
       <div style={{position: 'absolute', right: 86, top: 76, color: '#8D754F', fontSize: 19, letterSpacing: 2, opacity: .72}}>数学探究 · 三角形</div>
-      <Audio src={staticFile('audio/dialogue.mp3')} volume={0.95} />
     </AbsoluteFill>
   );
 };
