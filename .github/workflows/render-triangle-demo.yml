@@ -23,6 +23,10 @@ jobs:
           node-version: 20
       - name: Install dependencies
         run: npm install --no-audit --no-fund
+      - name: Install Chinese font
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-noto-cjk
       - name: Render 24.5-second animation
         run: npx remotion render src/index.ts TriangleAngleSum out/triangle-angle-sum-remotion.mp4 --codec=h264
       - name: Upload rendered video
