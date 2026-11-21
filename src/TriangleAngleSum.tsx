@@ -226,7 +226,7 @@ export const TriangleAngleSum: React.FC = () => {
   const captionOpacity = interpolate(frame, [624, 640, 735], [0, 1, 1], clamp);
 
   return (
-    <AbsoluteFill style={{backgroundColor: '#F7EFD8', overflow: 'hidden', fontFamily: 'Arial, "Microsoft YaHei", sans-serif'}}>
+    <AbsoluteFill style={{backgroundColor: '#F7EFD8', overflow: 'hidden', fontFamily: '"Noto Sans CJK SC", "Microsoft YaHei", sans-serif'}}>
       <ForestBoard />
       <div style={{position: 'absolute', left: 112, top: 68, fontSize: 36, fontWeight: 800, color: '#315B32', letterSpacing: 3, opacity: intro}}>情境导入</div>
       <div style={{position: 'absolute', left: 0, right: 0, top: 205, textAlign: 'center', fontSize: 43, fontWeight: 800, color: '#79502D', letterSpacing: 5, opacity: interpolate(frame, [20, 45, 240, 270], [0, .92, .92, 0], clamp)}}>大三角形 VS 小三角形</div>
