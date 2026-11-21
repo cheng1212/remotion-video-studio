@@ -1,0 +1,34 @@
+name: Render Triangle Angle Sum Demo
+
+on:
+  push:
+    branches:
+      - demo/triangle-angle-sum
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    name: Render animated triangle characters with Remotion
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Render 24.5-second animation
+        run: npx remotion render src/index.ts TriangleAngleSum out/triangle-angle-sum-remotion.mp4 --codec=h264
+      - name: Upload rendered video
+        uses: actions/upload-artifact@v4
+        with:
+          name: triangle-angle-sum-remotion-demo
+          path: out/triangle-angle-sum-remotion.mp4
+          if-no-files-found: error
+          retention-days: 14
